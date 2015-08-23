@@ -1,0 +1,139 @@
+body {
+	background-image:url('matrix background.jpg');
+	background-repeat: no-repeat;
+    background-attachment: fixed;
+    color:ivory;
+}
+
+table {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 90%;
+    border-collapse: collapse;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+table td, table th {
+    font-size: 1em;
+    color:ivory;
+    border: 1px solid #98bf21;
+    padding: 3px 7px 2px 7px;
+    background-color:rgba(167, 201, 66, 0.6);
+}
+
+
+tr:hover, tr td:hover, tr.alt td:hover{
+	color:blue;
+	background-color:rgb(255, 255, 102);
+}
+
+table th {
+    font-size: 1.1em;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    background-color: #A7C942;
+    color: #ffffff;
+}
+
+.myButton {
+	border: 5px solid darkblue; 
+	padding: 10px;
+    background: rgba(51, 204, 255, 0.6);
+    width:20%;
+    color:blue;
+    font-weight:bold;
+    font-size:1.4em;	
+    margin-left:auto;
+    margin-right:auto;
+    display:block;
+    margin-top:20px;
+}
+
+input[type=text] {
+	border: 5px solid darkblue; 
+	padding: 10px;
+    background: rgba(51, 204, 255, 0.6);
+    margin: 0 0 10px 0;
+    width:10%;
+    color:ivory;
+    font-size:1.2em;
+}
+
+input[type=submit]{
+	border: 5px solid darkblue; 
+	padding: 10px;
+    background: rgba(51, 204, 255, 0.6);
+    margin: 0 0 10px 0;
+    width:10%;
+    color:blue;
+    font-weight:bold;
+    font-size:1.2em;
+}
+
+
+label {
+	font-size: 1.1em;
+	display:block;
+	width:10%;
+	padding:0px 15px 0px 15px;
+	
+	background-color:rgba(51, 204, 51, 0.7);
+}
+
+h1, h2, h3, p {
+	margin-left:5%;
+}
+
+.topnav {
+  color: ivory;
+  font-size:2em;
+  font-weight:bold;
+  width: 100%;
+  z-index: 999;
+  background-color: rgba(102, 255, 255,0.5);
+  opacity: 0.98;
+  height: 40px;
+}
+
+.plaina {
+	text-decoration:none;
+	color:rgba(255, 255, 255, 0.8);
+	margin-left:20px;
+}
+table tr.alt td {
+	
+    color: ivory;
+    background-color: rgba(255, 153, 0, 0.6);
+}
+
+
+.catnav {
+	overflow:hidden;
+	margin-left:5%;
+}
+
+nav a:link, nav a:visited {
+    display: block;
+    width: 180px;
+    height: 60px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: rgba(0, 255, 204, 0.6);
+    background-color: rgba(0, 0, 255, 0.5);
+    text-align: center;
+    padding: 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin:5px;
+}
+
+nav a:hover, nav a:active {
+    background-color: rgba(153, 102, 255, 0.5);
+    color: rgba(0, 255, 204, 0.9);
+}
+
+nav li {
+	list-style-type:none;
+	float:left;
+}

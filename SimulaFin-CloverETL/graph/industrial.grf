@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="tom" created="Wed Apr 22 15:07:10 PDT 2015" guiVersion="4.0.4" id="1429745665975" licenseCode="RegCode" licenseType="Community" modified="Thu Apr 23 17:18:53 PDT 2015" modifiedBy="tom" name="energy" revision="1.44" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata9" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="," name="final" previewAttachmentCharset="ISO-8859-1" recordDelimiter="\r\n" type="delimited">
+<Field name="year" type="long"/>
+<Field name="month" type="long"/>
+<Field length="12" name="value" scale="2" type="decimal"/>
+<Field length="12" name="rate" scale="2" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata8" previewAttachment="${DATAIN_DIR}/formatted rates.txt" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter=" " label="formatted rates.txt" name="formatted_rates_txt" previewAttachment="${DATAIN_DIR}/formatted rates.txt" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="0" type="delimited">
+<Field name="year" type="long"/>
+<Field eofAsDelimiter="true" name="month" type="long"/>
+<Field name="rate" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="|" name="hist_price" previewAttachmentCharset="ISO-8859-1" recordDelimiter="\n" type="delimited">
+<Field name="ticker" size="255" type="string"/>
+<Field format="excel:General" name="year" size="19" type="long"/>
+<Field name="month" size="19" type="long"/>
+<Field length="8" name="close" scale="2" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata5" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="|" name="hist_price_shares" previewAttachmentCharset="ISO-8859-1" recordDelimiter="\r\n" type="delimited">
+<Field name="ticker" type="string"/>
+<Field name="year" type="long"/>
+<Field name="month" type="long"/>
+<Field name="value" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="," name="historical_price" previewAttachmentCharset="ISO-8859-1" recordDelimiter="\n" type="delimited">
+<Field name="ticker" size="255" type="string"/>
+<Field name="year" size="19" type="long"/>
+<Field name="month" type="long"/>
+<Field length="8" name="close" scale="2" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="|" name="month_avg" previewAttachmentCharset="ISO-8859-1" recordDelimiter="\r\n" type="delimited">
+<Field name="year" type="long"/>
+<Field name="month" type="long"/>
+<Field name="avg_value" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter=";" name="stock_industry" previewAttachmentCharset="ISO-8859-1" recordDelimiter="\n" type="delimited">
+<Field name="ticker" size="255" type="string"/>
+<Field name="industry" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata4">
+<Record fieldDelimiter="|" name="stock_share" recordDelimiter="\r\n" type="delimited">
+<Field name="ticker" type="string"/>
+<Field name="shares" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata7">
+<Record fieldDelimiter="|" name="unemp_rates" recordDelimiter="\r\n" type="delimited">
+<Field name="rate" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata6">
+<Record fieldDelimiter="|" name="year_month_industry_total_value" recordDelimiter="\r\n" type="delimited">
+<Field name="year" type="long"/>
+<Field name="month" type="long"/>
+<Field name="value" type="decimal"/>
+</Record>
+</Metadata>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/simulafin" id="JDBC0" jdbcSpecific="MYSQL" name="simulafinDB" password="fatcat" type="JDBC" user="root"/>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node aggregateKey="ticker;year;month" enabled="enabled" guiName="Aggregate" guiX="634" guiY="190" id="AGGREGATE" mapping="$year:=$year;$month:=$month;$avg_value:=avg($value);" sorted="false" type="AGGREGATE"/>
+<Node aggregateKey="year;month" enabled="enabled" guiName="Aggregate" guiX="844" guiY="190" id="AGGREGATE1" mapping="$year:=$year;$month:=$month;$value:=sum($avg_value);" sorted="false" type="AGGREGATE"/>
+<Node enabled="enabled" guiName="ExtHashJoin" guiX="331" guiY="181" id="EXT_HASH_JOIN" joinKey="$ticker=$ticker" slaveDuplicates="true" type="EXT_HASH_JOIN">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.ticker = $in.0.ticker;
+	$out.0.year = $in.1.year;
+	$out.0.month = $in.1.month;
+	$out.0.close = $in.1.close;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="ExtHashJoin" guiX="501" guiY="351" id="EXT_HASH_JOIN1" joinKey="$ticker=$ticker" slaveDuplicates="true" type="EXT_HASH_JOIN">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.ticker = $in.0.ticker;
+	$out.0.year = $in.0.year;
+	$out.0.month = $in.0.month;
+	$out.0.value = transform2($in.1.shares) * $in.0.close;
+
+	return ALL;
+}
+
+
+function decimal transform2(string ss){
+	if (substring(ss, length(ss) - 1) == "B") {
+		return str2decimal(substring(ss, 0, length(ss) - 1)) * 1000;
+	} else {
+		return str2decimal(substring(ss, 0, length(ss) - 1));
+	}
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="ExtHashJoin" guiX="689" guiY="569" id="EXT_HASH_JOIN2" joinKey="$year=$year;$month=$month" type="EXT_HASH_JOIN">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.year = $in.0.year;
+	$out.0.month = $in.0.month;
+	$out.0.value = $in.0.value;
+	$out.0.rate = $in.1.rate;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="ExtSort" guiX="850" guiY="395" id="EXT_SORT" sortKey="year(a);month(a)" type="EXT_SORT"/>
+<Node enabled="enabled" guiName="ExtSort" guiX="401" guiY="586" id="EXT_SORT1" sortKey="year(a);month(a)" type="EXT_SORT"/>
+<Node charset="UTF-8" dataPolicy="lenient" dbConnection="JDBC0" enabled="enabled" guiName="Hist Prices" guiX="75" guiY="302" id="HIST_PRICES" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[select ticker, year(date) as year, month(date) as month, close from simulafin.historical_price;]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Reformat" guiX="1020" guiY="569" id="REFORMAT" type="REFORMAT">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.value = ($in.0.value - 527381) / 527381;
+	$out.0.rate = ($in.0.rate - 4.4) / 4.4;
+	$out.0.year = $in.0.year;
+	$out.0.month = $in.0.month;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node dbConnection="JDBC0" enabled="enabled" guiName="Stock Industry" guiX="75" guiY="129" id="STOCK_INDUSTRY" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[select ticker, industry from simulafin.stock where industry = 'Industrial']]></attr>
+</Node>
+<Node dbConnection="JDBC0" enabled="enabled" guiName="Stock Shares" guiX="255" guiY="435" id="STOCK_SHARES" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[select ticker, shares from simulafin.stock_stat;]]></attr>
+</Node>
+<Node charset="UTF-8" enabled="enabled" fileURL="${DATAIN_DIR}/formatted rates.txt" guiName="Unemployment Rates" guiX="75" guiY="586" id="UNEMPLOYMENT_RATES" type="DATA_READER"/>
+<Node enabled="enabled" fileURL="${DATAOUT_DIR}/industrial.csv" guiName="UniversalDataWriter" guiX="1053" guiY="318" id="UNIVERSAL_DATA_WRITER" type="DATA_WRITER"/>
+<Edge debugMode="false" fromNode="AGGREGATE:0" guiBendpoints="" guiRouter="Manhattan" id="Edge3" inPort="Port 0 (in)" metadata="Metadata3" outPort="Port 0 (out)" toNode="AGGREGATE1:0"/>
+<Edge debugMode="false" fromNode="AGGREGATE1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge6" inPort="Port 0 (in)" metadata="Metadata6" outPort="Port 0 (out)" toNode="EXT_SORT:0"/>
+<Edge debugMode="false" fromNode="EXT_HASH_JOIN:0" guiBendpoints="" guiRouter="Manhattan" id="Edge2" inPort="Port 0 (driver)" metadata="Metadata2" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN1:0"/>
+<Edge debugMode="false" fromNode="EXT_HASH_JOIN1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge5" inPort="Port 0 (in)" metadata="Metadata5" outPort="Port 0 (out)" toNode="AGGREGATE:0"/>
+<Edge debugMode="true" fromNode="EXT_HASH_JOIN2:0" guiBendpoints="" guiRouter="Manhattan" id="Edge10" inPort="Port 0 (in)" metadata="Metadata9" outPort="Port 0 (out)" toNode="REFORMAT:0"/>
+<Edge debugMode="false" fromNode="EXT_SORT:0" guiBendpoints="" guiRouter="Manhattan" id="Edge7" inPort="Port 0 (driver)" metadata="Metadata6" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN2:0"/>
+<Edge fromNode="EXT_SORT1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge9" inPort="Port 1 (slave)" metadata="Metadata8" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN2:1"/>
+<Edge debugMode="false" fromNode="HIST_PRICES:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 1 (slave)" metadata="Metadata1" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN:1"/>
+<Edge fromNode="REFORMAT:0" guiBendpoints="" guiRouter="Manhattan" id="Edge11" inPort="Port 0 (in)" outPort="Port 0 (out)" persistedImplicitMetadata="Metadata9" toNode="UNIVERSAL_DATA_WRITER:0"/>
+<Edge debugMode="false" fromNode="STOCK_INDUSTRY:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (driver)" metadata="Metadata0" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN:0"/>
+<Edge fromNode="STOCK_SHARES:0" guiBendpoints="" guiRouter="Manhattan" id="Edge4" inPort="Port 1 (slave)" metadata="Metadata4" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN1:1"/>
+<Edge debugMode="false" fromNode="UNEMPLOYMENT_RATES:0" guiBendpoints="" guiRouter="Manhattan" id="Edge8" inPort="Port 0 (in)" metadata="Metadata8" outPort="Port 0 (output)" toNode="EXT_SORT1:0"/>
+</Phase>
+</Graph>
